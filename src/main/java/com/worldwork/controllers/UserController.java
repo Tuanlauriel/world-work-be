@@ -27,10 +27,10 @@ public class UserController {
         return EntityResponse.generateResponse("Find all users", HttpStatus.OK, authService.getAllUsers());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getUserById(@PathVariable("id") int id) {
-        Optional<User> userOptional = authService.getUserById(id);
-        return userOptional.map(user -> EntityResponse.generateResponse("Find user by id", HttpStatus.OK, user)).orElseGet(() -> EntityResponse.generateResponse("Invalid id", HttpStatus.NO_CONTENT, "No content"));
+    @GetMapping("/{email}")
+    public ResponseEntity<Object> getUserByEmail(@PathVariable("email") String email) {
+        Optional<User> userOptional = authService.getUserByEmail(email);
+        return userOptional.map(user -> EntityResponse.generateResponse("Find user by email", HttpStatus.OK, user)).orElseGet(() -> EntityResponse.generateResponse("Invalid email", HttpStatus.NO_CONTENT, "No content"));
     }
 
     @PostMapping

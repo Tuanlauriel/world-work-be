@@ -1,11 +1,17 @@
 package com.worldwork.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "banners")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Banner {
 
     @Id
