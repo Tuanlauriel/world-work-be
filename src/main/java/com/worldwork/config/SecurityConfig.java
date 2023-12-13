@@ -44,10 +44,12 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests(request -> {
             request.requestMatchers("/test/api/v1/**").permitAll();
-            request.requestMatchers("/api/v1/auth/login").permitAll();
+            request.requestMatchers("/api/v1/auth/**").permitAll();
             request.requestMatchers("/api/v1/recruiters").permitAll();
             request.requestMatchers("/api/v1/upload/**").permitAll();
             request.requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll();
+            request.requestMatchers("/api/v1/users/{email}").authenticated();
+            request.requestMatchers("/api/v1/banners").permitAll();
         });
         http.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authenticationProvider(authenticationProvider()).addFilterBefore(

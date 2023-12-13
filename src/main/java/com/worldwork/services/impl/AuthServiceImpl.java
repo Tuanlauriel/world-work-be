@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,8 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(AuthRequest authRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         var user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtService.generateToken(user);
-        var jwtRefresh = jwtService.generateRefreshToken(new HashMap<>(), user);
+        String jwt = jwtService.generateToken(user);
+        String jwtRefresh = jwtService.generateRefreshToken(new HashMap<>(), user);
         return AuthResponse.builder()
                 .token(jwt)
                 .tokenRefresh(jwtRefresh)
@@ -43,6 +44,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse refreshToken(String tokenRefresh) {
+        String email = jwtService.extractUsername(tokenRefresh);
+        User user = userRepository.findByEmail(email).orElseThrow();
+        if (jwtService.isTokenValid(tokenRefresh, user)) {
+            String jwt = jwtService.generateToken(user);
+            return AuthResponse.builder()
+                    .token(jwt)
+                    .tokenRefresh(tokenRefresh)
+                    .build();
+        }
         return null;
     }
 

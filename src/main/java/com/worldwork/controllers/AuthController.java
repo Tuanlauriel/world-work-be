@@ -2,6 +2,7 @@ package com.worldwork.controllers;
 
 import com.worldwork.dto.AuthRequest;
 import com.worldwork.dto.EntityResponse;
+import com.worldwork.dto.RefreshTokenRequest;
 import com.worldwork.entities.User;
 import com.worldwork.services.AuthService;
 import jakarta.validation.Valid;
@@ -27,5 +28,13 @@ public class AuthController {
             return EntityResponse.generateResponse("Authentication", HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
         return EntityResponse.generateResponse("Authentication", HttpStatus.OK, authService.login(authRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Object> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return EntityResponse.generateResponse("Invalid token refresh", HttpStatus.BAD_REQUEST, "");
+        }
+        return EntityResponse.generateResponse("Authentication", HttpStatus.OK, authService.refreshToken(refreshTokenRequest.getTokenRefresh()));
     }
 }

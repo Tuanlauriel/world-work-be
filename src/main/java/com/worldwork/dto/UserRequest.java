@@ -2,6 +2,7 @@ package com.worldwork.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,10 @@ public class UserRequest {
     @NotNull
     @Size(min = 6, max = 16)
     private String password;
+
+    @Null
+    private String address;
+
+    @Null
+    private String phone;
 }

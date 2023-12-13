@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @RestController
 @RequestMapping("/api/v1/recruiters")
 @RequiredArgsConstructor
@@ -27,8 +29,13 @@ public class RecruiterController {
         if (bindingResult.hasErrors()) {
             return EntityResponse.generateResponse("Invalid request data", HttpStatus.BAD_REQUEST, "Please check information");
         }
-        Company company = companyService.createCompany(recruiterRequest.getCompanyRequest());
-        User user = authService.createUser(recruiterRequest.getUserRequest(), Role.RECRUITER, company);
-        return EntityResponse.generateResponse("Recruiter created successfully", HttpStatus.CREATED, user);
+        System.out.println(recruiterRequest.toString());
+        try {
+            Company company = companyService.createCompany(recruiterRequest.getCompanyRequest());
+            User user = authService.createUser(recruiterRequest.getUserRequest(), Role.RECRUITER, company);
+            return EntityResponse.generateResponse("Recruiter created successfully", HttpStatus.CREATED, user);
+        } catch (Exception e) {
+            return EntityResponse.generateResponse("User already exists", HttpStatus.BAD_REQUEST, "");
+        }
     }
 }
